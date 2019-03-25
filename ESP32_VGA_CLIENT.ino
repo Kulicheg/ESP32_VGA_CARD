@@ -31,8 +31,8 @@ void setup()
 
 void loop()
 {
+  fillrect(random(280)+20, random(160)+20, random(19), random(19), random(32768));
   dot(160, 100, random(32768));
-  delay(1000);
 }
 
 
