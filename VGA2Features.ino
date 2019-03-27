@@ -66,7 +66,7 @@ void loop()
 
   byte command = headerdetector();
 
-  delay(33);
+
   //vga.clear(0);
   switch (command)
   {
