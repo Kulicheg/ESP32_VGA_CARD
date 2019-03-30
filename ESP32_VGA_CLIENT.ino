@@ -17,14 +17,7 @@ struct commandPack
 };
 
 struct commandPack Pack;
-
-const byte PackSize = sizeof (Pack);
-byte Packet[PackSize];
-
-
-byte header [4] = {49, 50, 51, 52}; // 1234
 byte command;
-
 
 void setup()
 {
@@ -36,7 +29,6 @@ void setup()
 
 void loop()
 {
-
   unsigned int c = 0;
   for (int y = 0; y < 20; y++)
   {
@@ -52,9 +44,9 @@ void loop()
     for ( unsigned int q = 0; q < 10; q++)
     {
       setcursor(10, q*10);
-      lprint ("Hello world! Fucking interrupts! Theq are shifting my ass! 1234567890", q * 650);
-      // delay(30);
-    }
+      lprint ("Hello world! Dont try reach bottom line, realy dont try", q * 650);
+     }
+    
     delay(1000);
     cls(0);
 
@@ -74,7 +66,6 @@ void loop()
   }
   delay(3000);
 }
-
 
 
 void cls(uint16_t c)
@@ -223,12 +214,7 @@ void lprint(String text, int16_t color)
   int ostatok = lng % 4;
 
   if (ostatok != 0) ostatok =  4 - (lng % 4);
-
-  //  Serial.print("lng = ");
-  //  Serial.println(lng);
-  //  Serial.print("ostatok = ");
-  //  Serial.println(ostatok);
-
+  
   for (int con  = 0; con < ostatok; con++)
   {
     text = text  + "@";
@@ -243,7 +229,5 @@ void lprint(String text, int16_t color)
     Pack.y2 = text.charAt(pages * 4 + 3);
     Pack.color = color;
     ETout.sendData();
-
   }
-
 }
