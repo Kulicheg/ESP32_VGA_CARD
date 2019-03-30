@@ -16,9 +16,6 @@ const int bluePins[] = {21, 22, 23, 27};
 const int hsyncPin = 32;
 const int vsyncPin = 33;
 
-int incomingByte;
-byte header [4] = {49, 50, 51, 52}; // 1234
-
 int x1d;
 int y1d;
 int x2d;
@@ -26,8 +23,6 @@ int y2d;
 int command;
 
 unsigned int colord;
-
-
 
 struct commandPack
 {
@@ -40,24 +35,17 @@ struct commandPack
 };
 struct commandPack Pack;
 
-const byte PackSize = sizeof (Pack);
-
 VGA14Bit vga;
 EasyTransfer ETin;
 
-
-
-
-//initial setup
 void setup()
 {
   Serial.begin(115200);
-
   ETin.begin(details(Pack), &Serial);
 
 
   //we need double buffering for smooth animations
-  vga.setFrameBufferCount(2);
+  vga.setFrameBufferCount(1);
   vga.init(vga.MODE320x200, redPins, greenPins, bluePins, hsyncPin, vsyncPin);
   //setting the font
   vga.setFont(Font6x8);
@@ -71,9 +59,7 @@ void loop()
 {
 
 command = 0;
-long int s, f;
 
-s = millis();
 if (ETin.receiveData())
 {
   command = Pack.command;
@@ -82,7 +68,6 @@ if (ETin.receiveData())
   x2d = Pack.x2;
   y2d = Pack.y2;
   colord = Pack.color;
-  f = millis ();
 }
 
 switch (command)
@@ -167,12 +152,10 @@ case 12:
 
 case 13:
 
-
   String text =  "    ";
 
   for ( int pages = 0; pages < 4; pages++)
   {
-
     text.setCharAt(0, x1d);
     text.setCharAt(1, y1d);
     text.setCharAt(2, x2d);
@@ -181,10 +164,8 @@ case 13:
     const char * txt = text.c_str();
     vga.setTextColor((unsigned int) colord);
     vga.print((const char *)txt);
-
     break;
 
   }
-  //vga.show();
 }
 }
