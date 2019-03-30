@@ -38,20 +38,41 @@ void loop()
 {
 
   unsigned int c = 0;
-  //  for (int y = 0; y < 20; y++)
-  //  {
-  //    for (int x = 0; x < 32; x++)
-  //    {
-  //      fillrect (x * 10, y * 10, 10, 10, c * 102);
-  //      c++;
-  //    }
-  //  }
-  //cls(0);
-  lprint ("Hello world!", 65535);
-  //lprint ("-=#O.O#=-", 32768);
+  for (int y = 0; y < 20; y++)
+  {
+    for (int x = 0; x < 32; x++)
+    {
+      fillrect (x * 10, y * 10, 10, 10, c * 102);
+      c++;
+    }
+  }
+  delay(1000);
+  cls(0);
 
-   delay(3000);
-  
+    for ( unsigned int q = 0; q < 10; q++)
+    {
+      setcursor(10, q*10);
+      lprint ("Hello world! Fucking interrupts! Theq are shifting my ass! 1234567890", q * 650);
+      // delay(30);
+    }
+    delay(1000);
+    cls(0);
+
+  for (int q = 0; q < 50; q++)
+  {
+    rect (0, 0, 320, 200, 65535 + q);
+    rect (50, 50, 220, 100 + q, 32768 + q);
+    circle (160, 100, 60, 16384 + q);
+  }
+  delay (3000);
+
+  cls(65535);
+
+  for (int q = 1; q < 10; q++)
+  {
+    circle (160, 100, q * 10, 8192);
+  }
+  delay(3000);
 }
 
 
