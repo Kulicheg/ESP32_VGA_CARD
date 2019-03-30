@@ -3,8 +3,12 @@
 // BA - 186
 // BB - 187
 
+#include <EasyTransfer.h>
+EasyTransfer ETin, ETout;
+
 struct commandPack
 {
+  int16_t command;
   int16_t x1;
   int16_t y1;
   int16_t x2;
@@ -17,237 +21,208 @@ struct commandPack Pack;
 const byte PackSize = sizeof (Pack);
 byte Packet[PackSize];
 
-byte currentByte;
+
 byte header [4] = {49, 50, 51, 52}; // 1234
 byte command;
-byte flag;
+
 
 void setup()
 {
-
   Serial.begin(115200);
+  ETin.begin(details(Pack), &Serial);
+  ETout.begin(details(Pack), &Serial);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
 {
 
-  int c = 0;
-  for (int y = 0; y < 20; y++)
-  {
-    for (int x = 0; x < 30; x++)
-    {
-      rect (x * 10, y * 10, 10, 10, 65535);
-      c++;
-    }
-  }
-  // delay(1500);
-  cls(0);
+  unsigned int c = 0;
+  //  for (int y = 0; y < 20; y++)
+  //  {
+  //    for (int x = 0; x < 32; x++)
+  //    {
+  //      fillrect (x * 10, y * 10, 10, 10, c * 102);
+  //      c++;
+  //    }
+  //  }
+  //cls(0);
+  lprint ("Hello world!", 65535);
+  //lprint ("-=#O.O#=-", 32768);
+
+   delay(3000);
+  
 }
 
 
 
 void cls(uint16_t c)
 {
+  Pack.command = 1;
   Pack.x1 = 0;
   Pack.y1 = 0;
   Pack.x2 = 0;
   Pack.y2 = 0;
   Pack.color = c;
-
-  packSender (1);
+  ETout.sendData();
 }
 
 void vgashow()
 {
+  Pack.command = 2;
   Pack.x1 = 0;
   Pack.y1 = 0;
   Pack.x2 = 0;
   Pack.y2 = 0;
   Pack.color = 0;
-
-  packSender (2);
+  ETout.sendData();
 }
 
 void setcursor(int16_t x1, int16_t y1)
 {
+  Pack.command = 3;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = 0;
   Pack.y2 = 0;
   Pack.color = 0;
-
-  packSender (3);
+  ETout.sendData();
 }
 
 
 void settextcolor(uint16_t c)
 {
+  Pack.command = 4;
   Pack.x1 = 0;
   Pack.y1 = 0;
   Pack.x2 = 0;
   Pack.y2 = 0;
   Pack.color = c;
-
-  packSender (4);
+  ETout.sendData();
 }
 
 void dot(int16_t x1, int16_t y1, uint16_t c)
 {
+  Pack.command = 5;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = 0;
   Pack.y2 = 0;
   Pack.color = c;
-  packSender (5);
+  ETout.sendData();
 }
 
 void line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t c)
 {
+  Pack.command = 6;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = x2;
   Pack.y2 = y2;
   Pack.color = c;
-  packSender (6);
+  ETout.sendData();
 }
 
 
 
 void rect(int16_t x1, int16_t y1, int16_t w, int16_t h, uint16_t c)
 {
+  Pack.command = 7;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = w;
   Pack.y2 = h;
   Pack.color = c;
-
-  packSender (7);
+  ETout.sendData();
 
 }
 
 void fillrect(int16_t x1, int16_t y1, int16_t w, int16_t h, uint16_t c)
 {
+  Pack.command = 8;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = w;
   Pack.y2 = h;
   Pack.color = c;
-  packSender (8);
+  ETout.sendData();
 }
 
 void circle(int16_t x1, int16_t y1, int16_t r, uint16_t c)
 {
+  Pack.command = 9;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = r;
   Pack.y2 = 0;
   Pack.color = c;
-  packSender (9);
+  ETout.sendData();
 }
 
 
 
 void ellipse (int16_t x1, int16_t y1, int16_t rx, int16_t ry, uint16_t c)
 {
+  Pack.command = 10;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = rx;
   Pack.y2 = ry;
   Pack.color = c;
-  packSender (10);
+  ETout.sendData();
 }
 
 
 void fillellipse (int16_t x1, int16_t y1, int16_t rx, int16_t ry, uint16_t c)
 {
+  Pack.command = 11;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = rx;
   Pack.y2 = ry;
   Pack.color = c;
-  packSender (11);
+  ETout.sendData();
 }
 
 
 void fillcircle(int16_t x1, int16_t y1, int16_t r, uint16_t c)
 {
+  Pack.command = 12;
   Pack.x1 = x1;
   Pack.y1 = y1;
   Pack.x2 = r;
   Pack.y2 = 0;
   Pack.color = c;
-  packSender (12);
+  ETout.sendData();
 }
 
-void lprint(String text)
+void lprint(String text, int16_t color)
 {
-  Pack.x1 = 1;
-  Pack.y1 = 1;
-  Pack.x2 = 1;
-  Pack.y2 = 1;
-  Pack.color = 1;
-  packSender (13);
+  int lng = text.length();
+  int ostatok = lng % 4;
+
+  if (ostatok != 0) ostatok =  4 - (lng % 4);
+
+  //  Serial.print("lng = ");
+  //  Serial.println(lng);
+  //  Serial.print("ostatok = ");
+  //  Serial.println(ostatok);
+
+  for (int con  = 0; con < ostatok; con++)
+  {
+    text = text  + "@";
+  }
+  lng = text.length() / 4;
+  for ( int pages = 0; pages < lng; pages++)
+  {
+    Pack.command = 13;
+    Pack.x1 = text.charAt(pages * 4 + 0);
+    Pack.y1 = text.charAt(pages * 4 + 1);
+    Pack.x2 = text.charAt(pages * 4 + 2);
+    Pack.y2 = text.charAt(pages * 4 + 3);
+    Pack.color = color;
+    ETout.sendData();
+
+  }
+
 }
-
-
-
-void packSender (byte command)
-{
-byte answer = 0;
-
-while (answer !=32)
-  {
-  for (byte q = 0; q < 4; q++)
-  {
-    Serial.write (header[q]);
-  }
-
-  Serial.write (command);
-
-  unsigned char * Packet;
-  Packet = (unsigned char *) &Pack;
-
-  for (int count = 0; count < PackSize; count++)
-  {
-    Serial.write(Packet[count]);
-  }
- 
-
-delay (2);
-  answer =  headerdetector();
-  Serial.println ("");
-  Serial.print ("answer = ");
-  Serial.println (answer);
-  }
-}
-
-byte headerdetector()
-{
-
-  byte command = 0;
-  byte flag = 0;
-  byte currentByte;
-
-
-  if (Serial.available())
-  {
-    while (flag < 4)
-    { currentByte = Serial.read();
-
-      if (currentByte == header [flag]) flag++; else flag = 0;
-
-    }
-  }
-
-  if (Serial.available()) command = Serial.read();
-
-  if (command > 32)
-  {
-    Serial.print ("Invalid command: ");
-    Serial.println (command);
-    command = 255;
-  }
-
-  return command;
-}
-
